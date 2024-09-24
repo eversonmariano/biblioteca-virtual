@@ -19,11 +19,11 @@ import static org.springframework.mail.javamail.MimeMessageHelper.MULTIPART_MODE
 
 @Service
 @RequiredArgsConstructor
+
 public class EmailService {
 
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
-
 
 
     @Async
