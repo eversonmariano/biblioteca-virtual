@@ -17,15 +17,16 @@ spring:
 mail:
   host: localhost
   port: 1025
-  username: ever
-  password: ever
+  username: hello
+  password: hello
   properties:
     mail:
       smtp:
-        trust: "*"
-      auth: true
-      starttls:
-        enable: true
+        ssl:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
       connectiontimeout: 5000
       timeout: 3000
       writetimeout: 5000
