@@ -1,8 +1,8 @@
 package com.everson.biblioteca.auth;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,17 +16,17 @@ import lombok.Setter;
 public class RegistrationRequest {
 
     @NotEmpty(message = "Firstname cannot be empty")
-    @NotBlank(message = "Firstname cannot be blank")
+    @NotNull(message = "Firstname cannot be null")
     private String firstname;
     @NotEmpty(message = "Lastname name cannot be empty")
-    @NotBlank(message = "Lastname cannot be blank")
+    @NotNull(message = "Lastname cannot be null")
     private String lastname;
     @Email(message = "Email is not valid")
     @NotEmpty(message = "Email name cannot be empty")
-    @NotBlank(message = "Email cannot be blank")
+    @NotNull(message = "Email cannot be null")
     private String email;
     @NotEmpty(message = "Password name cannot be empty")
-    @NotBlank(message = "Password cannot be blank")
+    @NotNull(message = "Password cannot be null")
     @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
 }

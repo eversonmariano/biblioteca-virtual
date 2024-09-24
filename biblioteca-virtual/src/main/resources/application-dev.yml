@@ -36,3 +36,6 @@ application:
     jwt:
       secret-key: 404E6352404E635266556A586E327D2357533A87866QSS548
       expiration: 8640000
+  mailing:
+    frontend:
+      activation-url: http://locahhost:4200/activate-account
