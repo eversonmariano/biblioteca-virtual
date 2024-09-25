@@ -8,10 +8,9 @@ import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfig
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-
-@SpringBootApplication(scanBasePackages = {"x"} , exclude = JpaRepositoriesAutoConfiguration.class)
 @EnableJpaAuditing
 @EnableAsync
+@SpringBootApplication(scanBasePackages = {"x"} , exclude = JpaRepositoriesAutoConfiguration.class)
 public class BibliotecaVirtualApiApplication {
 
 	public static void main(String[] args) {
