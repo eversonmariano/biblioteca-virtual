@@ -1,5 +1,6 @@
 package com.everson.biblioteca.book;
 
+import com.everson.biblioteca.file.FilesUtils;
 import com.everson.biblioteca.history.BookTransactionHistory;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,7 @@ public class BookMapper {
                 .archived(book.isArchived())
                 .shareable(book.isShareable())
                 .owner(book.getOwner().getFullName())
+                .cover(FilesUtils.readFileFromLocation(book.getBookCover()))
                 .build();
 
     }
