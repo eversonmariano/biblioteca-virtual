@@ -1,9 +1,11 @@
 package com.everson.biblioteca.book;
 
 import com.everson.biblioteca.common.PageResponse;
+import com.everson.biblioteca.exception.OperationNotPermittedExcepetion;
 import com.everson.biblioteca.history.BookTransactionHistory;
 import com.everson.biblioteca.history.BookTransactionHistoryRepository;
 import com.everson.biblioteca.user.User;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.everson.biblioteca.book.BookSpecification.*;
 
@@ -101,5 +104,53 @@ public class BookService {
                 allBorrowedBooks.isFirst(),
                 allBorrowedBooks.isLast()
         );
+    }
+
+    public Integer updateShareableStatus(Integer bookId, Authentication connectedUser) {
+        Book  book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found the id " + bookId));
+        User user = ((User) connectedUser.getPrincipal());
+        if(!Objects.equals(book.getOwner().getId(), user.getId())) {
+            throw new OperationNotPermittedExcepetion("You cannot update others books shareable status");
+        }
+        book.setShareable(!book.isShareable());
+        bookRepository.save(book);
+        return bookId;
+
+    }
+
+    public Integer updateArchivedStatus(Integer bookId, Authentication connectedUser) {
+        Book  book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found the id " + bookId));
+        User user = ((User) connectedUser.getPrincipal());
+        if(!Objects.equals(book.getOwner().getId(), user.getId())) {
+            throw new OperationNotPermittedExcepetion("You cannot update others books archived status");
+        }
+        book.setArchived(!book.isArchived());
+        bookRepository.save(book);
+        return bookId;
+
+    }
+
+    public Integer borrowBook(Integer bookId, Authentication connectedUser) {
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found the id " + bookId));
+
+        if(book.isArchived() || !book.isShareable()) {
+            throw new OperationNotPermittedExcepetion("You cannot borrow this book");
+        }
+        User user = ((User) connectedUser.getPrincipal());
+        if(!Objects.equals(book.getOwner().getId(), user.getId())) {
+            throw new OperationNotPermittedExcepetion("You cannot update borrow your not book.");
+        }
+        final boolean isAlreadyBorrowed = transactionHistoryRepository.isAlreadyBorrowedByUser(bookId, user.getId());
+        if(isAlreadyBorrowed) {
+            throw new OperationNotPermittedExcepetion("The requested book is already borrowed.");
+        }
+        BookTransactionHistory bookTransactionHistory = BookTransactionHistory.builder()
+                .user(user)
+                .book(book)
+                .returned(false)
+                .returneApproved(false)
+                .build();
+
+        return transactionHistoryRepository.save(bookTransactionHistory).getId();
     }
 }

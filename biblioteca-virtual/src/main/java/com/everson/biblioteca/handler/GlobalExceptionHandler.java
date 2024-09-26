@@ -1,5 +1,6 @@
 package com.everson.biblioteca.handler;
 
+import com.everson.biblioteca.exception.OperationNotPermittedExcepetion;
 import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -64,6 +65,18 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleException(MessagingException exp) {
         return ResponseEntity
                 .status(INTERNAL_SERVER_ERROR)
+                .body(
+                        ExceptionResponse.builder()
+                                .error(exp.getMessage())
+                                .build()
+                );
+
+    }
+
+    @ExceptionHandler(OperationNotPermittedExcepetion.class)
+    public ResponseEntity<ExceptionResponse> handleException(OperationNotPermittedExcepetion exp) {
+        return ResponseEntity
+                .status(BAD_REQUEST)
                 .body(
                         ExceptionResponse.builder()
                                 .error(exp.getMessage())
